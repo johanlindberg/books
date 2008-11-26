@@ -1,0 +1,34 @@
+Annotated Turing
+----------------
+
+I wrote this code because I wanted to try out the examples from the book
+The Annotated Turing by Charles Petzold.
+
+To use it (in Emacs/Slime), simply C-x C-f ch5.lisp, C-c C-k and do:
+
+; Constructs the example from page 81
+CL-USER> (p81)
+NEXT
+
+; Step through the program with (next)
+CL-USER> (next)
+TAPE: 0_  NEXT: C
+       ^  STEP: 1
+NIL
+CL-USER> (next)
+TAPE: 0__  NEXT: E
+        ^  STEP: 2
+NIL
+CL-USER> (next)
+TAPE: 0_1_  NEXT: F
+         ^  STEP: 3
+NIL
+CL-USER> (next)
+TAPE: 0_1__  NEXT: B
+          ^  STEP: 4
+NIL
+CL-USER> (next)
+TAPE: 0_1_0_  NEXT: C
+           ^  STEP: 5
+NIL
+CL-USER> 
