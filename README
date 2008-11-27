@@ -2,7 +2,7 @@ Annotated Turing
 ----------------
 
 I wrote this code because I wanted to try out the examples from the book
-The Annotated Turing by Charles Petzold.
+The Annotated Turing (http://www.theannotatedturing.com/) by Charles Petzold.
 
 To use it (in Emacs/Slime), simply C-x C-f ch5.lisp, C-c C-k and do:
 
@@ -23,5 +23,13 @@ NIL
 CL-USER> (next 100)
 TAPE: 0_1_0_1_0_1_0_1_0_1_0_1_0_1_0_1_0_1_0_1_0_1_0_1_0_1_0_1_0_1_0_1_0_1_0_1_0_1_0_1_0_1_0_1_0_1_0_1_0_1_0_1__  NEXT: B
                                                                                                               ^  STEP: 104
+NIL
+
+; Constructs the example from page 87
+CL-USER> (p87)
+NEXT
+CL-USER> (next 1000)
+TAPE: @@0_0_1_0_1_1_0_1_1_1_0_1_1_1_1_0_1_1_1_1_1_0_1_1_1_1_1_1_0_1_1_1_1_1_1_1_0_1_1_1_1_1_1_1_1_0_1_1_1_1_1_1_1_1_1  NEXT: .P
+                                     ^                                                                                 STEP: 1000
 NIL
 CL-USER> 
