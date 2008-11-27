@@ -10,25 +10,18 @@ To use it (in Emacs/Slime), simply C-x C-f ch5.lisp, C-c C-k and do:
 CL-USER> (p81)
 NEXT
 
-; Step through the program with (next)
+; Step through the program with next
 CL-USER> (next)
+
 TAPE: 0_  NEXT: C
        ^  STEP: 1
 NIL
-CL-USER> (next)
-TAPE: 0__  NEXT: E
-        ^  STEP: 2
-NIL
-CL-USER> (next)
-TAPE: 0_1_  NEXT: F
-         ^  STEP: 3
-NIL
-CL-USER> (next)
+CL-USER> (next 3)
 TAPE: 0_1__  NEXT: B
           ^  STEP: 4
 NIL
-CL-USER> (next)
-TAPE: 0_1_0_  NEXT: C
-           ^  STEP: 5
+CL-USER> (next 100)
+TAPE: 0_1_0_1_0_1_0_1_0_1_0_1_0_1_0_1_0_1_0_1_0_1_0_1_0_1_0_1_0_1_0_1_0_1_0_1_0_1_0_1_0_1_0_1_0_1_0_1_0_1_0_1__  NEXT: B
+                                                                                                              ^  STEP: 104
 NIL
 CL-USER> 
