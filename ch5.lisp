@@ -10,9 +10,10 @@
   (defun make-turing-machine (&key starting-state)
     (let ((next-configuration starting-state)
 	  (step 0))
-      (defun next ()
-	(setf next-configuration (funcall next-configuration))
-	(incf step)
+      (defun next (&optional (n 1))
+	(dotimes (i n) 
+	  (setf next-configuration (funcall next-configuration))
+	  (incf step))
 	(print-tape step next-configuration))))
 
   (defun clear-tape ()
