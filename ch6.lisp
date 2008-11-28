@@ -118,6 +118,8 @@
      (make-turing-machine :starting-state 'begin)))
 
 ;; Computes the square root of 2 in binary
+;; Use (next 408) to put the machine in the state that is
+;; assumed in the description on page 102.
 (defmacro p102 ()
   `(progn
      (m-configuration begin
