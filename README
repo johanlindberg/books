@@ -65,6 +65,8 @@ TAPE: 0_1_0_1_0_1_0_1_0_1_0_1_0_1_0_1_0_1_0_1_0_1_0_1_0_1_0__  NEXT: .E
                                                             ^  STEP: 54
 NIL
 
+A walk-through of chapter 6
+---------------------------
 Let's try something a little more complicated. In chapter 6, page 102, there's
 a machine that calculates the square root of 2 in binary. Let's assume that
 you're *not* using Slime and instead load this program the "hard" way.
@@ -81,8 +83,54 @@ NEXT
 The book's description of how this program works assumes that it already has
 performed 408 steps. 
 
-CL-USER> (next 408)
+CL-USER> (next 408) ; page 102
 TAPE: @1_0_1_____________  NEXT: NEW
       ^                    STEP: 408
+NIL
+
+The next time the tape is shown is when mark-digits has done it's work, which
+takes another 5 steps.
+
+CL-USER> (next 5) ; page 103
+TAPE: @1X0X1X_Z_R________  NEXT: FIND-X
+                ^          STEP: 413
+NIL
+
+The machine requires another 51 steps to get to the state when it is next shown.
+
+CL-USER> (next 51) ; page 103
+TAPE: @1_0_1__Z_R_R_R_R_R_R_R  NEXT: FIND-DIGITS
+      ^                        STEP: 464
+NIL
+
+The rest of the tape "snapshots" are at 8, 11, 20, 4, 20, 3, 22.
+
+CL-USER> (next 8) ; page 105
+TAPE: @1_0_1__Z_V_R_R_R_R_R_R  NEXT: ADD-FINISHED
+                ^              STEP: 472
+NIL
+CL-USER> (next 11) ;page 106
+TAPE: @1_0_1X_Y_V_R_R_R_R_R_R  NEXT: FIND-DIGITS
+            ^                  STEP: 483
+NIL
+CL-USER> (next 20) ;page 106
+TAPE: @1_0_1X_Y_V_V_R_R_R_R_R  NEXT: ERASE-OLD-X
+        ^                      STEP: 503
+NIL
+CL-USER> (next 4) ;page 106
+TAPE: @1_0X1__Y_V_V_R_R_R_R_R  NEXT: FIND-DIGITS
+          ^                    STEP: 507
+NIL
+CL-USER> (next 20) ;page 106
+TAPE: @1_0X1__Y_V_V_S_R_R_R_R  NEXT: ERASE-OLD-X
+        ^                      STEP: 527
+NIL
+CL-USER> (next 3) ;page 106
+TAPE: @1X0_1__Y_V_V_S_R_R_R_R  NEXT: FIND-DIGITS
+        ^                      STEP: 530
+NIL
+CL-USER> (next 22) ;page 106
+TAPE: @1X0_1__Y_V_V_S_V_R_R_R  NEXT: ERASE-OLD-X
+        ^                      STEP: 552
 NIL
 CL-USER> 
