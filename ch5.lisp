@@ -56,9 +56,13 @@
 (defmacro m-configuration (name &body states)
   `(defun ,name ()
      (cond ,@(mapcar #'(lambda (state)
-			 `((eql (read-symbol) ',(car state))
-			   ,@(cadr state)
-			   ',(caddr state)))
+			 (cond ((eql (car state) 'none)
+				`((eql (read-symbol) nil)
+				  ,@(cadr state)
+				  ',(caddr state)))
+			       (t `((eql (read-symbol) ',(car state))
+				    ,@(cadr state)
+				    ',(caddr state)))))
 		     states))))
 
 ;;; Here are the example Turing machine configurations from the book. I've
@@ -68,17 +72,17 @@
 ;; Computes 010101010101010101010...
 (defmacro p81 ()
   `(progn
-     (m-configuration .b (nil ((P 0) (R)) .c))
-     (m-configuration .c (nil ((R)) .e))
-     (m-configuration .e (nil ((P 1) (R)) .f))
-     (m-configuration .f (nil ((R)) .b))
+     (m-configuration .b (none ((P 0) (R)) .c))
+     (m-configuration .c (none ((R)) .e))
+     (m-configuration .e (none ((P 1) (R)) .f))
+     (m-configuration .f (none ((R)) .b))
 
      (make-turing-machine :starting-state '.b)))
 
 (defmacro p84 ()
   `(progn
      (m-configuration .b
-       (nil ((P 0)) .b)
+       (none ((P 0)) .b)
        (0 ((R) (R) (P 1)) .b)
        (1 ((R) (R) (P 0)) .b))
 
@@ -87,11 +91,11 @@
 ;; Computes 010000000000000000000...
 (defmacro p83 ()
   `(progn
-     (m-configuration .b (nil ((P 0) (R)) .c))
-     (m-configuration .c (nil ((R)) .d))
-     (m-configuration .d (nil ((P 1) (R)) .e))
-     (m-configuration .e (nil ((R)) .f))
-     (m-configuration .f (nil ((P 0) (R)) .e))
+     (m-configuration .b (none ((P 0) (R)) .c))
+     (m-configuration .c (none ((R)) .d))
+     (m-configuration .d (none ((P 1) (R)) .e))
+     (m-configuration .e (none ((R)) .f))
+     (m-configuration .f (none ((P 0) (R)) .e))
 
      (make-turing-machine :starting-state '.b)))
 
@@ -99,21 +103,21 @@
 (defmacro p87 ()
   `(progn
      (m-configuration .b
-       (nil ((P '@) (R) (P '@) (R) (P 0) (R) (R) (P 0) (L) (L)) .o))
+       (none ((P '@) (R) (P '@) (R) (P 0) (R) (R) (P 0) (L) (L)) .o))
      (m-configuration .o
        (1 ((R) (P 'x) (L) (L) (L)) .o)
        (0 () .q))
      (m-configuration .q
-       (0 ((R) (R)) .q)
-       (1 ((R) (R)) .q)
-       (nil ((P 1) (L)) .p))
+       (0 ((R) (R)) .q)         ; In the book these two lines are described
+       (1 ((R) (R)) .q)         ; as one using (any ((R) (R)) .q)
+       (none ((P 1) (L)) .p))
      (m-configuration .p
        (x ((E) (R)) .q)
        (@ ((R)) .f)
-       (nil ((L) (L)) .p))
+       (none ((L) (L)) .p))
      (m-configuration .f
-       (0 ((R) (R)) .f)
+       (0 ((R) (R)) .f)         ; (any ((R) (R)) .f)
        (1 ((R) (R)) .f)
-       (nil ((P 0) (L) (L)) .o))
+       (none ((P 0) (L) (L)) .o))
 
      (make-turing-machine :starting-state '.b)))
