@@ -9,16 +9,18 @@ Annotated Turing (http://www.theannotatedturing.com/) by Charles Petzold.
 There are several examples of Turing Machines described in the book. I've
 arranged them according to chapter and which page the description *starts* at.
 
-I've tried to stay as close as possible to the descriptions used in the book
+I've tried to stay as close as possible to the descriptions used in the book,
 without getting silly about it. Most notably the operations, which are specified
 in the book as P1,R,R are represented here as ((P 1) (R) (R)) instead. I've also
-added a . before the name of a configuration if it otherwise would have clashed
-with an available tape operation.
+added a . before the name of a configuration if that otherwise would have been
+the same as the name of an available tape operation. Yes. That happens. In
+Turing's paper, configurations and operations are written in different fonts to
+avoid any such confusion.
 
 Usage
 -----
-If you're using Slime, simply C-x C-f /path/to/ch5.lisp, C-c C-k to load and
-compile.
+If you're using Slime, simply C-x C-f ~/your/path/to/ch5.lisp, and C-c C-k to
+compile and load.
 
 ; SLIME 2008-09-22
 CL-USER> 
@@ -36,17 +38,17 @@ CL-USER> (pprint (macroexpand-1 '(p81)))
        (M-CONFIGURATION .F (NONE ((R)) .B))
        (MAKE-TURING-MACHINE :STARTING-STATE '.B)); No value
 
-Invoking (p81) results in a fresh Turing Machine, and a blank tape, with the
-configurations .B (starting-state), .C, .E and .F available to it.
+Invoking (p81) results in a fresh Turing machine, and a blank tape, with the
+configurations .B (starting-state), .C, .E and .F as specified.
 
 CL-USER> (p81)
 NEXT
 
-The function next is used to step through the program. It performs the
-operations specified for the state (current configuration and symbol on tape) it
-is currently in and prints the whole tape, the number of steps performed so far
-and what the next configuration is. _ represents a blank square and ^ indicates
-the position of the head.
+The function next is used to step through the execution of the Turing machine.
+It performs the operations specified for the state (current configuration and
+symbol on tape) it is currently in. Then it prints the whole tape, the number of
+steps performed so far and what the next configuration is. _ represents a blank
+square and ^ indicates the position of the head.
 
 CL-USER> (next)
 
@@ -81,15 +83,15 @@ CL-USER> (p102)
 NEXT
 
 The book's description of how this program works assumes that it already has
-performed 408 steps. 
+calculated three digits or, in other words, performed 408 steps. 
 
 CL-USER> (next 408) ; page 102
 TAPE: @1_0_1_____________  NEXT: NEW
       ^                    STEP: 408
 NIL
 
-The next time the tape is shown is when mark-digits has done it's work, which
-takes another 5 steps.
+The next time the tape is shown (in the book) is when mark-digits has done it's
+work, which takes another 5 steps.
 
 CL-USER> (next 5) ; page 103
 TAPE: @1X0X1X_Z_R________  NEXT: FIND-X
@@ -103,34 +105,46 @@ TAPE: @1_0_1__Z_R_R_R_R_R_R_R  NEXT: FIND-DIGITS
       ^                        STEP: 464
 NIL
 
-The rest of the tape "snapshots" are at 8, 11, 20, 4, 20, 3, 22.
+The rest of the tape "snapshots" are at 8, 11, 20, 4, 20, 3, 22, 8, 6 and 423.
 
 CL-USER> (next 8) ; page 105
 TAPE: @1_0_1__Z_V_R_R_R_R_R_R  NEXT: ADD-FINISHED
                 ^              STEP: 472
 NIL
-CL-USER> (next 11) ;page 106
+CL-USER> (next 11) ; page 106
 TAPE: @1_0_1X_Y_V_R_R_R_R_R_R  NEXT: FIND-DIGITS
             ^                  STEP: 483
 NIL
-CL-USER> (next 20) ;page 106
+CL-USER> (next 20) ; page 106
 TAPE: @1_0_1X_Y_V_V_R_R_R_R_R  NEXT: ERASE-OLD-X
         ^                      STEP: 503
 NIL
-CL-USER> (next 4) ;page 106
+CL-USER> (next 4) ; page 106
 TAPE: @1_0X1__Y_V_V_R_R_R_R_R  NEXT: FIND-DIGITS
           ^                    STEP: 507
 NIL
-CL-USER> (next 20) ;page 106
+CL-USER> (next 20) ; page 106
 TAPE: @1_0X1__Y_V_V_S_R_R_R_R  NEXT: ERASE-OLD-X
         ^                      STEP: 527
 NIL
-CL-USER> (next 3) ;page 106
+CL-USER> (next 3) ; page 106
 TAPE: @1X0_1__Y_V_V_S_R_R_R_R  NEXT: FIND-DIGITS
         ^                      STEP: 530
 NIL
-CL-USER> (next 22) ;page 106
+CL-USER> (next 22) ; page 106
 TAPE: @1X0_1__Y_V_V_S_V_R_R_R  NEXT: ERASE-OLD-X
         ^                      STEP: 552
+NIL
+CL-USER> (next 8) ; page 107
+TAPE: @1_0_1Y_X_V_V_S_V_R_R_R  NEXT: FLAG-RESULT-DIGITS
+              ^                STEP: 560
+NIL
+CL-USER> (next 6) ; page 107
+TAPE: @1_0_1Y_X_W_U_R_U_R_R_R  NEXT: FIND-DIGITS
+                        ^      STEP: 566
+NIL
+CL-USER> (next 423) ; page 108
+TAPE: @1_0_1_1_________________  NEXT: NEW
+      ^                          STEP: 989
 NIL
 CL-USER> 
