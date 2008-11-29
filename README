@@ -82,7 +82,7 @@ CL-USER> (load "~/Projects/annotated-turing/ch6")
 CL-USER> (p102)
 NEXT
 
-The book's description of how this program works assumes that it already has
+The book's description of how this machine works assumes that it already has
 calculated three digits or, in other words, performed 408 steps. 
 
 CL-USER> (next 408) ; page 102
