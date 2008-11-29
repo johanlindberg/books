@@ -1,35 +1,88 @@
 Annotated Turing
-----------------
+================
 
-I wrote this code because I wanted to try out the examples from the book
-The Annotated Turing (http://www.theannotatedturing.com/) by Charles Petzold.
+Introduction
+------------
+I wrote this code because I wanted to try out the examples from the book The
+Annotated Turing (http://www.theannotatedturing.com/) by Charles Petzold.
 
-To use it (in Emacs/Slime), simply C-x C-f ch5.lisp, C-c C-k and do:
+There are several examples of Turing Machines described in the book. I've
+arranged them according to chapter and which page the description *starts* at.
 
-; Constructs the example from page 81
+I've tried to stay as close as possible to the descriptions used in the book
+without getting silly about it. Most notably the operations, which are specified
+in the book as P1,R,R are represented here as ((P 1) (R) (R)) instead. I've also
+added a . before the name of a configuration if it otherwise would have clashed
+with an available tape operation.
+
+Usage
+-----
+If you're using Slime, simply C-x C-f /path/to/ch5.lisp, C-c C-k to load and
+compile.
+
+; SLIME 2008-09-22
+CL-USER> 
+;;;; Compile file /Users/johanlindberg/Projects/annotated-turing/ ...
+;Compiling "/Users/johanlindberg/Projects/annotated-turing/ch5.lisp"...
+;Loading #P"/Users/johanlindberg/Projects/annotated-turing/ch5.dx64fsl"...
+
+p81 is a macro that constructs the example from chapter 5, page 81.
+
+CL-USER> (pprint (macroexpand-1 '(p81)))
+
+(PROGN (M-CONFIGURATION .B (NONE ((P 0) (R)) .C))
+       (M-CONFIGURATION .C (NONE ((R)) .E))
+       (M-CONFIGURATION .E (NONE ((P 1) (R)) .F))
+       (M-CONFIGURATION .F (NONE ((R)) .B))
+       (MAKE-TURING-MACHINE :STARTING-STATE '.B)); No value
+
+Invoking (p81) results in a fresh Turing Machine, and a blank tape, with the
+configurations .B (starting-state), .C, .E and .F available to it.
+
 CL-USER> (p81)
 NEXT
 
-; Step through the program with next
+The function next is used to step through the program. It performs the
+operations specified for the state (current configuration and symbol on tape) it
+is currently in and prints the whole tape, the number of steps performed so far
+and what the next configuration is. _ represents a blank square and ^ indicates
+the position of the head.
+
 CL-USER> (next)
 
-TAPE: 0_  NEXT: C
+TAPE: 0_  NEXT: .C
        ^  STEP: 1
 NIL
+
+You can also step forward several states before printing.
+
 CL-USER> (next 3)
-TAPE: 0_1__  NEXT: B
+TAPE: 0_1__  NEXT: .B
           ^  STEP: 4
 NIL
-CL-USER> (next 100)
-TAPE: 0_1_0_1_0_1_0_1_0_1_0_1_0_1_0_1_0_1_0_1_0_1_0_1_0_1_0_1_0_1_0_1_0_1_0_1_0_1_0_1_0_1_0_1_0_1_0_1_0_1_0_1__  NEXT: B
-                                                                                                              ^  STEP: 104
+CL-USER> (next 50)
+TAPE: 0_1_0_1_0_1_0_1_0_1_0_1_0_1_0_1_0_1_0_1_0_1_0_1_0_1_0__  NEXT: .E
+                                                            ^  STEP: 54
 NIL
 
-; Constructs the example from page 87
-CL-USER> (p87)
+Let's try something a little more complicated. In chapter 6, page 102, there's
+a machine that calculates the square root of 2 in binary. Let's assume that
+you're *not* using Slime and instead load this program the "hard" way.
+
+CL-USER> (compile-file "~/Projects/annotated-turing/ch6.lisp")
+#P"/Users/johanlindberg/Projects/annotated-turing/ch6.dx64fsl"
+NIL
+NIL
+CL-USER> (load "~/Projects/annotated-turing/ch6")
+#P"/Users/johanlindberg/Projects/annotated-turing/ch6.dx64fsl"
+CL-USER> (p102)
 NEXT
-CL-USER> (next 1000)
-TAPE: @@0_0_1_0_1_1_0_1_1_1_0_1_1_1_1_0_1_1_1_1_1_0_1_1_1_1_1_1_0_1_1_1_1_1_1_1_0_1_1_1_1_1_1_1_1_0_1_1_1_1_1_1_1_1_1  NEXT: .P
-                                     ^                                                                                 STEP: 1000
+
+The book's description of how this program works assumes that it already has
+performed 408 steps. 
+
+CL-USER> (next 408)
+TAPE: @1_0_1_____________  NEXT: NEW
+      ^                    STEP: 408
 NIL
 CL-USER> 
