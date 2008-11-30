@@ -99,13 +99,9 @@
 	 (if (> (length final-config) 1)
 	     final-config
 	     (car final-config)))
-	((in final-config args)
+	((member final-config args)
 	 final-config)
 	(t `',final-config)))
-
-(defun in (element lst)
-  (not (eq (length (set-difference lst (list element)))
-	   (length lst))))
 
 
 ;;; Here are the example Turing machine configurations from the book.
