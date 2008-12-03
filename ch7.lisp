@@ -15,7 +15,9 @@
       (defun next (&optional (n 1))
 	(dotimes (i n) 
 	  (if (consp next-configuration)
-	      (setf next-configuration (funcall (car next-configuration) (cdr next-configuration)))
+	      (if (cdr next-configuration)
+		  (setf next-configuration (funcall (car next-configuration) (cadr next-configuration)))
+		  (setf next-configuration (funcall (car next-configuration))))
 	      (setf next-configuration (funcall next-configuration)))
 	  (incf step))
 	(print-tape :step step :next-conf next-configuration))))
@@ -82,34 +84,31 @@
 (defmacro m-function (name args &body states)
   `(defun ,name ,args
      (cond ,@(mapcar #'(lambda (state)
-			 (cond ((eql (car state) 'none)
-				`((eql (read-symbol) nil)
-				  ,@(cadr state)
-				  ,(expand-final-configuration (caddr state) args)))
-			       ((eql (car state) 'else)
-				`(t ,@(cadr state)
-				    ,(expand-final-configuration (caddr state) args)))
-			       (t `((eql (read-symbol) ',(car state))
+			 (let ((final-config (if (or (member (caddr state) args)
+						     (listp (caddr state)))
+						 (caddr state)
+						 `',(caddr state))))
+			   (cond ((eql (car state) 'none)
+				  `((eql (read-symbol) nil)
 				    ,@(cadr state)
-				    ,(expand-final-configuration (caddr state) args)))))
+				    ,final-config))
+				 ((eql (car state) 'else)
+				  `(t ,@(cadr state)
+				      ,final-config))
+				 (t `((eql (read-symbol) ',(car state))
+				      ,@(cadr state)
+				      ,final-config)))))
 		     states))))
-
-(defun expand-final-configuration (final-config args)
-  (cond ((consp final-config)
-	 (if (> (length final-config) 1)
-	     final-config
-	     (car final-config)))
-	((member final-config args)
-	 final-config)
-	(t `',final-config)))
-
-
+		      
 ;;; Here are the example Turing machine configurations from the book.
 
 ;; This is not really a new Turing machine but rather the one that calculates
 ;; the square root of 2 (p102) from ch6.lisp when using m-functions instead.
-(defmacro p112 ()
+(defmacro p111 ()
   `(progn
+     (m-configuration new
+       (@ ((R)) mark-digits)
+       (else ((L)) new))
      (m-function goto-sentinel (A)
        (@ ((R)) A)
        (else ((L)) (goto-sentinel A)))
@@ -191,7 +190,7 @@
      (m-function print-digit (a)
        (0 ((R) (E) (R)) (print-digit a))
        (1 ((R) (E) (R)) (print-digit a))
-       (none ((P 1) (R) (R) (R)) cleanup))
+       (none ((P a) (R) (R) (R)) cleanup))
      (m-configuration cleanup
        (none ((N)) new)
        (else ((E) (R) (R)) cleanup))
