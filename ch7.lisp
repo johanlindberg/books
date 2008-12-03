@@ -81,6 +81,7 @@
 		     states))))
 
 ;; This macro expands an m-function list into a defun
+;; NOTE! m-functions' intermediate states aren't printed by (next)
 (defmacro m-function (name args &body states)
   `(defun ,name ,args
      (cond ,@(mapcar #'(lambda (state)
@@ -106,9 +107,10 @@
 ;; the square root of 2 (p102) from ch6.lisp when using m-functions instead.
 (defmacro p111 ()
   `(progn
-     (m-configuration new
-       (@ ((R)) mark-digits)
-       (else ((L)) new))
+     (m-configuration new     ; On p112 Charles' mentions that this m-function
+       (@ ((R)) mark-digits)  ; together with new-digit-is-zero and new-digit-is-one
+       (else ((L)) new))      ; can be removed. I have added it again because it
+                              ; is used by the m-configuration cleanup.
      (m-function goto-sentinel (A)
        (@ ((R)) A)
        (else ((L)) (goto-sentinel A)))
